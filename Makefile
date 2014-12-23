@@ -1,21 +1,14 @@
-PWD=`pwd`
 
-.PHONY: build test run start stop clean
+.PHONY: build test clean
 
 build:
-	docker build --rm=true -t pomin5/php5-apache .
+	docker build --rm -t pomin5/php5-apache .
 
 test:
-	docker run -it --rm=true -p 8080:80 --name php5-apache -v $(PWD):/app pomin5/php5-apache /bin/bash
-
-run:
-	docker run -d -p 8080:80 --name=php5-apache -v $(PWD):/app pomin5/php5-apache
-
-start:
-	docker start php5-apache
-
-stop:
-	docker stop php5-apache
+	docker run -it --rm -p 8080:80 --name php5-apache \
+		-v $(PWD)/public:/var/www \
+		-v $(PWD)/log/apache:/var/log/apache \
+	 	pomin5/php5-apache /bin/bash
 
 clean:
 	docker rm -f php5-apache || true
